@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="./sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Banco</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand ms-3" href="#">Banco</a>
+            <!-- Agrega un elemento de Bienvenida al usuario activo -->
+            <h5 id="bienvenida" class="navbar-nav me-auto mb-2 mb-lg-0" style="display: none;">Bienvenido/a<span
+                    class="mx-2 text-primary text-decoration-underline text-capitalize"></span></h5>
+            <div class="row">
+                <form id="formulario" action="" class="d-flex">
+                    <div class="d-flex align-items-center">
+                        <p class="mx-2 mb-0 fw-bold">Inicia sesión</p>
+                    </div>
+                    <div class="col mx-2">
+                        <input id="nombre" type="text" class="form-control me-2" placeholder="Nombre"
+                            aria-label="Nombre" required>
+                    </div>
+                    <div class="col mx-2">
+                        <input id="password" type="password" class="form-control me-2" placeholder="Password"
+                            aria-label="Password" required>
+                    </div>
+                    <div class="col">
+                        <button id="submit" class="btn btn-outline-primary" type="submit">Iniciar Sesión</button>
+                    </div>
+                </form>
+            </div>
+            <button id="salir" type="button" style="width: 10rem; display: none;" class="btn btn-primary btn-lg mx-5"
+                disabled>Salir</button>
+        </div>
+    </nav>
+    <section class="banco">
+        <div class="container h-100">
+            <div class="body d-flex">
+                <div id="img-bienvenida" class="d-flex justify-content-center h-100 align-content-center align-self-center flex-wrap">
+                    <h2 class="fs-1 text-white mb-4 text-center" style="width: 26rem;">¡Bienvenido al Banco de México!</h2>
+                    <figure class="figure-img"><img src="./img/imagen-bienvenida.jpg" alt="imagen-bienvenida" title="Bienvenida"></figure>
+                </div>
+                <div id="sisBanco" class="d-flex flex-wrap justify-content-center align-content-start"
+                    style="display: none!important;">
+                    <div class="pt-5">
+                        <h2 class="text-white">¿Qué deseas hacer?</h2>
+                    </div>
+                    <div class="container mt-2">
+                        <div class="row ">
+                            <div class="col d-flex justify-content-center gap-2">
+                                <button id="btnSaldo" type="button" class="btn btn-primary" disabled>Consultar
+                                    Saldo</button>
+                                <button id="btnRetirar" type="button" class="btn btn-primary" disabled>Retirar</button>
+                                <button id="btnDepositar" type="button" class="btn btn-primary"
+                                    disabled>Depositar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-saldo d-flex justify-content-center pt-4 w-100">
+                        <div class="card p-3" style="width: 25rem;">
+                            <legend>Introduce la cantidad a: <span class="tipo-operacion text-black"></span></legend>
+                            <div id="grupoAccion" class="input-group mb-3 p-3">
+                                <button class="btn btn-secondary" type="button" id="button-addon1"
+                                    disabled>Aceptar</button>
+                                <input id="inpCantidad" type="number" class="form-control" placeholder="100"
+                                    aria-describedby="button-addon1" min="0" max="999" disabled="disabled">
+
+                            </div>
+                            <div class="mensajes text-center alert" role="alert"></div>
+                        </div>
+                    </div>
+                    <div class="mostrar-saldo pt-4 w-100 d-flex justify-content-center">
+                        <div class="card ">
+                            <div class="card-header">
+                                Su saldo es:
+                            </div>
+                            <div class="card-body" style="width: 25rem;">
+                                <h5 class="card-title text-center">$<span>000.00</span> MXN</h5>
+                                <p class="card-text text-end">Aplican resticciones</p>
+                                <div class="row d-flex flex-wrap justify-content-center gap-2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movimientos pt-4 mt-1 w-100 d-flex justify-content-center mb-2">
+                        <div class="card">
+                            <div class="card-header">
+                                Movimientos realizados:
+                            </div>
+                            <div class="card-body" style="width: 25rem;">
+                                <div id="listado-movimientos" class="d-flex flex-wrap justify-content-center gap-2">
+                                    <!-- <ul class="list-group list-group-horizontal w-100 d-flex justify-content-center">
+                                    <li class="list-group-item fw-bold text-success">$200</li>
+                                    <li class="list-group-item text-bg-success">Depósito</li>
+                                    <li class="list-group-item text-bg-success">Saldo en cuenta $300</li>
+                                </ul>
+                                <ul class="list-group list-group-horizontal d-flex justify-content-center w-100">
+                                    <li class="list-group-item fw-bold text-warning">$200</li>
+                                    <li class="list-group-item text-bg-warning">Retiro</li>
+                                </ul>
+                                <ul class="list-group list-group-horizontal d-flex justify-content-center w-100">
+                                    <li class="list-group-item fw-bold text-warning">$200</li>
+                                    <li class="list-group-item text-bg-warning">Retiro</li>
+                                </ul> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="footer d-flex">
+        <div class="container">
+            <div class="row d-flex justify-content-end align-content-center h-100">
+                <div class="col d-flex justify-content-center align-content-center gap-2">
+                <p class="text-white">Copyright <img src="./img/r-circle.svg" alt="registered"> Isaac Manríquez</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="./sweetalert2/sweetalert2.min.js" defer></script>
+    <script src="app.js"></script>
+    <script src="bd.js"></script>
+</body>
+
+</html>
