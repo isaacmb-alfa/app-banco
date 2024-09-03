@@ -18,11 +18,13 @@ const tipoOperacion = document.querySelector('.tipo-operacion');
 const inpCantidad = document.querySelector('#inpCantidad');
 
 const listarMovimientos = document.querySelector('#listado-movimientos');
+const salShadow = document.querySelector('#cantidad-saldo');
 
 let cantidad = 0;
 let saldoEnLinea = 0;
 let count = 0;
 let operaciones = [];
+let usuarioLocalStorage;
 
 
 
@@ -32,19 +34,31 @@ document.addEventListener('DOMContentLoaded', () => {
     submit.addEventListener('click', (e) => {
         e.preventDefault();
         //obtenemos base de daos de localStorage
+        const campoNombre = nameUser.value.toLowerCase();
         const cuentasObj = JSON.parse(localStorage.getItem('cuentas'));
-        console.log(cuentasObj);
-        
+
+        //identificar si ya habiamos accesdido antes
+
+        const usuarioActivo = JSON.parse(localStorage.getItem(campoNombre)) || '';
 
         //Filtra si el usuario se encuentra en la base de datos retornando el objeto
-
         const busqueda = cuentasObj.find((cuenta) => cuenta.nombre.toLowerCase() == nameUser.value.toLowerCase());
+
+        //Ingresar con un usuario que ya tenga sesión creada
+        if (usuarioActivo) {
+            const { nombre, password, saldo } = usuarioActivo;
+            usuarioLocalStorage = usuarioActivo;
+            identificarUsuario(nombre, password, saldo);
+            count = 0;
+            return;
+        }
         // Permite ingresar si el usuario existe
         if (busqueda) {
             //destucturamos el objeto obtenido
             const { nombre, password, saldo } = busqueda;
 
-            localStorage.setItem('usuarioActivo', JSON.stringify(busqueda));
+            localStorage.setItem(nombre.toLowerCase(), JSON.stringify(busqueda));
+            usuarioLocalStorage = busqueda;
             // identificamos que la contraseña sea correcta
             identificarUsuario(nombre, password, saldo);
         } else {
@@ -54,6 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 text: "Inténtalo Nuevamente"
             });
         }
+
+
     });
 
 });
@@ -68,6 +84,7 @@ function identificarUsuario(nombre, password, saldo) {
             showConfirmButton: false,
             timer: 1500
         });
+        operaciones = [];
         formulario.reset();
         //Bienvenida al usuario activo en el nav
         bienvenida.removeAttribute('style');
@@ -81,11 +98,12 @@ function identificarUsuario(nombre, password, saldo) {
         imgBienvenida.setAttribute('style', 'display: none !important');
         sisBanco.removeAttribute('style');
 
-        mostrarMovimiento();
+        //habilita los botones de acción dentro de la cuenta
         mostrarBtnAcciones();
-        if (count === 0) {
-            saldoEnLinea = saldo;
-        }
+
+        saldoEnLinea = saldo;
+
+
         //desabilitamos los campos de inicio de sesión
         submit.setAttribute('disabled', 'disabled');
         nameUser.setAttribute('disabled', 'disabled');
@@ -126,7 +144,17 @@ function mostrarBtnAcciones() {
 }
 function consultarSaldo(saldoEnLinea) {
 
-    imprimirSaldo(saldoEnLinea);
+    const spiner = document.querySelector('.spiner');
+    spiner.removeAttribute('style');
+    setTimeout(() => {
+        spiner.setAttribute('style', 'display: none');
+        salShadow.classList.add('text-shadow');
+        imprimirSaldo(saldoEnLinea);
+        mostrarMovimiento();
+    }, 2000);
+    setTimeout(() => {
+        salShadow.classList.remove('text-shadow');
+    }, 4000);
 }
 function habilitarCampos() {
     btnCantidad.removeAttribute('disabled');
@@ -134,6 +162,7 @@ function habilitarCampos() {
 };
 // determinamos que operación necesitamos hacer y la ejecutamos al darle click al boton de aceptar en candidad
 btnCantidad.addEventListener('click', () => {
+    //convertimos la cantidad en numero
     cantidad = Number(inpCantidad.value);
     //comprueba el tipo de operación seleccionada
     if (btnCantidad.hasAttribute('retiro')) {
@@ -144,11 +173,13 @@ btnCantidad.addEventListener('click', () => {
         if (saldoEnLinea >= 10 && saldoEnLinea > cantidad) {
             if ((saldoEnLinea - cantidad) >= 10) {
                 saldoEnLinea -= cantidad;
-                imprimirSaldo(saldoEnLinea);
-                imprimirAlerta('Retiro exitoso', 'exito');
+                // actualizamos el usuario en el localStorage guardamos movimientos realizados
+                actualizarUsuarioLocalStorage(saldoEnLinea);
+
                 const movimiento = { cantidad, saldoEnLinea, tipo: "retiro" };
                 nuevoMovimiento(movimiento);
-                mostrarMovimiento();
+
+                procesarMov(saldoEnLinea, movimiento.tipo);
                 inpCantidad.value = '';
                 btnDeposito.removeAttribute('disabled');
                 count++;
@@ -171,11 +202,13 @@ btnCantidad.addEventListener('click', () => {
 
         if ((cantidad + saldoEnLinea) <= 990) {
             saldoEnLinea += cantidad;
-            imprimirSaldo(saldoEnLinea);
-            imprimirAlerta('Depósito exitoso', 'exito');
+            // actualizamos el usuario en el localStorage guardamos movimientos realizados
+            actualizarUsuarioLocalStorage(saldoEnLinea);
+
             const movimiento = { cantidad, saldoEnLinea, tipo: "deposito" };
             nuevoMovimiento(movimiento);
-            mostrarMovimiento();
+
+            procesarMov(saldoEnLinea, movimiento.tipo);
             inpCantidad.value = '';
             btnRetiro.removeAttribute('disabled');
             count++;
@@ -193,6 +226,34 @@ btnCantidad.addEventListener('click', () => {
     }
 });
 btnSalir.addEventListener('click', salir);
+
+function actualizarUsuarioLocalStorage(saldoEnLinea) {
+    let { nombre, password, saldo } = usuarioLocalStorage;
+    saldo = saldoEnLinea;
+    //obtener el usuario al que vamos a actualizar 
+    const userGuardado = JSON.parse(localStorage.getItem(nombre.toLowerCase()));
+    // valida que usuario actualizar
+    if (userGuardado.nombre === nombre) {
+        usuarioLocalStorage.saldo = saldo;
+        localStorage.setItem(nombre.toLowerCase(), JSON.stringify(usuarioLocalStorage));
+    }
+}
+
+function procesarMov(saldoEnLinea, tipo) {
+    const spiner = document.querySelector('.spiner');
+    spiner.removeAttribute('style');
+    setTimeout(() => {
+        spiner.setAttribute('style', 'display: none');
+        salShadow.classList.add('text-shadow');
+        imprimirSaldo(saldoEnLinea);
+        mostrarMovimiento();
+        tipo === 'retiro' ? imprimirAlerta('Retiro exitoso', 'exito') : imprimirAlerta('Depósito exitoso', 'exito');
+    }, 2000);
+    setTimeout(() => {
+        salShadow.classList.remove('text-shadow');
+    }, 4000);
+}
+
 
 
 function imprimirSaldo(saldoEnLinea) {
@@ -214,12 +275,22 @@ function imprimirAlerta(mensaje, tipo) {
     }, 3000);
 }
 function nuevoMovimiento(movimiento) {
+    let { nombre } = usuarioLocalStorage;
     operaciones = [...operaciones, movimiento];
-    console.log(operaciones);
+    //guardamos los movimientos en local storage
+    localStorage.setItem(nombre, JSON.stringify(operaciones));
+
 }
 function mostrarMovimiento() {
     //limpiamos el HTML para imprimir un nuevo movimiento
     limpiarHTML();
+    //buscamos si tenemos operaciones guardadas en localStorage
+    let { nombre } = usuarioLocalStorage;
+    let movLocalStorage = JSON.parse(localStorage.getItem(nombre));
+
+    if (movLocalStorage) {
+        operaciones = movLocalStorage;
+    }
     //itera cada movimiento y crea un elemento para mostrar
     operaciones.forEach((movimiento) => {
         const { cantidad, saldoEnLinea, tipo } = movimiento;
@@ -259,6 +330,7 @@ function limpiarHTML() {
         listarMovimientos.removeChild(listarMovimientos.firstChild);
     }
 }
+
 function salir() {
     limpiarHTML();
     btnSaldo.setAttribute('disabled', 'disabled');
@@ -281,4 +353,3 @@ function salir() {
     imgBienvenida.removeAttribute('style');
     sisBanco.setAttribute('style', 'display:none!important');
 }
-console.log(JSON.parse( localStorage.getItem('usuarioActivo')));

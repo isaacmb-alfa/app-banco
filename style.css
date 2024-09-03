@@ -17,7 +17,8 @@ body {
     min-height: 13.8vh;
     max-height: 19vh;
 }
-.footer .container .row img{
+
+.footer .container .row img {
     width: 16px;
 }
 
@@ -29,6 +30,18 @@ body {
     width: 60rem;
 }
 
-.fs-1.text-white.mb-4.text-center{
-    font-size: 3.2rem!important;
+.fs-1.text-white.mb-4.text-center {
+    font-size: 3.2rem !important;
+}
+
+.spiner {
+    display: flex;
+}
+
+.text-shadow {
+    color: rgb(13, 109, 253);
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+
 }

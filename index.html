@@ -43,9 +43,12 @@
     <section class="banco">
         <div class="container h-100">
             <div class="body d-flex">
-                <div id="img-bienvenida" class="d-flex justify-content-center h-100 align-content-center align-self-center flex-wrap">
-                    <h2 class="fs-1 text-white mb-4 text-center" style="width: 26rem;">¡Bienvenido al Banco de México!</h2>
-                    <figure class="figure-img"><img src="./img/imagen-bienvenida.jpg" alt="imagen-bienvenida" title="Bienvenida"></figure>
+                <div id="img-bienvenida"
+                    class="d-flex justify-content-center h-100 align-content-center align-self-center flex-wrap">
+                    <h2 class="fs-1 text-white mb-4 text-center" style="width: 26rem;">¡Bienvenido al Banco de México!
+                    </h2>
+                    <figure class="figure-img"><img src="./img/imagen-bienvenida.jpg" alt="imagen-bienvenida"
+                            title="Bienvenida"></figure>
                 </div>
                 <div id="sisBanco" class="d-flex flex-wrap justify-content-center align-content-start"
                     style="display: none!important;">
@@ -73,6 +76,10 @@
                                     aria-describedby="button-addon1" min="0" max="999" disabled="disabled">
 
                             </div>
+                            <div class="spiner justify-content-center" style="display: none;">
+                            <!-- Spiner -->
+                                <l-bouncy size="45" speed="1.3" color="rgba(53, 45, 199, 1)"></l-bouncy>
+                            </div>
                             <div class="mensajes text-center alert" role="alert"></div>
                         </div>
                     </div>
@@ -82,7 +89,7 @@
                                 Su saldo es:
                             </div>
                             <div class="card-body" style="width: 25rem;">
-                                <h5 class="card-title text-center">$<span>000.00</span> MXN</h5>
+                                <h5 id="cantidad-saldo" class="card-title text-center">$<span>000.00</span> MXN</h5>
                                 <p class="card-text text-end">Aplican resticciones</p>
                                 <div class="row d-flex flex-wrap justify-content-center gap-2">
                                 </div>
@@ -121,12 +128,12 @@
         <div class="container">
             <div class="row d-flex justify-content-end align-content-center h-100">
                 <div class="col d-flex justify-content-center align-content-center gap-2">
-                <p class="text-white">Copyright <img src="./img/r-circle.svg" alt="registered"> Isaac Manríquez</p>
+                    <p class="text-white">Copyright <img src="./img/r-circle.svg" alt="registered"> Isaac Manríquez</p>
                 </div>
             </div>
         </div>
     </section>
-
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/bouncy.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
